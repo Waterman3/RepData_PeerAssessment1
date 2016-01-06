@@ -1,9 +1,13 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
+itle: "Reproducible Research: Peer Assessment 1"
 output: 
   html_document:
     keep_md: true
 ---
+## Introduction
+
+This is a report on the activity of a research subject over a period of , measured by the number of steps taken in five-minute intervals. It investigates the diurnal variation in steps and the the difference between the activity on weekdays and the activity on weekends.
+
 
 
 ## Loading and preprocessing the data
