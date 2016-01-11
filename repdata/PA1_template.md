@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 ## Introduction
 
 This is a report on the activity of a research subject over a period of , measured by the number of steps taken in five-minute intervals. It investigates the diurnal variation in steps and the the difference between the activity on weekdays and the activity on weekends.
@@ -18,7 +13,8 @@ https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
 
 Firstly, we extrat the data from a .zip file that has already been downloaded and read it by running the following script:
 
-```{r echo=TRUE}
+
+```r
 {
   #get_activity_data.R - R script to obtain 
   #walking activity data.
@@ -34,7 +30,8 @@ Firstly, we extrat the data from a .zip file that has already been downloaded an
 
 Below is a histogram showing the number of days on which the subject walked a number of steps within a given range, each range being 1000.The R code used to produce the histogram appears before the histogram.
 
-```{r echo=TRUE}
+
+```r
 {
 stepsaday<-tapply(activity$steps, activity$date, sum)
 
@@ -42,15 +39,29 @@ hist(stepsaday,breaks=22,xlab="Number of Steps Taken Per Day", ylab="Number of D
 }
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)\
+
 The mean number of steps per day is 
-```{r echo=TRUE}
+
+```r
 summary(stepsaday)[4]
 ```
+
+```
+##  Mean 
+## 10770
+```
 and the median number of steps per day  is
-```{r echo=TRUE}
+
+```r
 {
 summary(stepsaday)[3]
 }
+```
+
+```
+## Median 
+##  10760
 ```
 
 
@@ -58,7 +69,8 @@ summary(stepsaday)[3]
 
 Below is a time series plot of the average number of steps taken for each 5 minute time interval during the day. It is preceded by the R code that generated the plot.
 
-```{r echo=TRUE}
+
+```r
 {
 notNA<-which(activity$steps>=0)
 activity_notnull<-activity[notNA,]
@@ -67,22 +79,34 @@ plot(unique(activity$interval), stepsbyint,type="l")
 }
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)\
+
 From this graph it can be seen that the subject is usually most active at about 9am each and walks very little between about 11pm and 5am.
 
 The time interval with the most steps can be found by using this R code:
-```{r echo=TRUE}
+
+```r
 {
   maxsteps<-which(stepsbyint==max(stepsbyint))
   stepstable<-cbind(unique(activity_notnull$interval), as.vector(stepsbyint))
   stepstable[maxsteps,1]
   }
 ```
+
+```
+## [1] 835
+```
 The time interval with the most steps is 8:35 to 8:40 am.
 
 The number of records with no value for steps taken is
 
-```{r echo=TRUE}
+
+```r
 {length(which(activity$steps==FALSE))}
+```
+
+```
+## [1] 11014
 ```
 
 That is 11014.
@@ -91,7 +115,8 @@ That is 11014.
 
 We can fill in the missing data by using the mean for a given time interval rounded to the nearest whole step.
 
-```{r echo=TRUE}
+
+```r
 {
   fillsteps<-round(stepstable[,2])
   stepfills<-data.frame(cbind(stepstable,fillsteps))
@@ -109,7 +134,8 @@ We can fill in the missing data by using the mean for a given time interval roun
 Now we can apply this set of results to the same treatment as before to see what effect imputing missing values will have.
 
 The R code for finding the number of steps taken per day and plotting a histogram of same is:
-```{r echo=TRUE}
+
+```r
 {
 new_stepsaday<-tapply(step_rep$steps, step_rep$date, sum)
 
@@ -117,35 +143,57 @@ hist(new_stepsaday,breaks=22,xlab="Number of Steps Taken Per Day", ylab="Number 
 }
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)\
+
 
 The mean number of steps per day is 
-```{r echo=TRUE}
+
+```r
 summary(new_stepsaday)[4]
 ```
+
+```
+##  Mean 
+## 10770
+```
 and the median number of steps per day  is
-```{r echo=TRUE}
+
+```r
 {
 summary(new_stepsaday)[3]
 }
 ```
 
+```
+## Median 
+##  10760
+```
+
 The code for finding the average number of steps for each time interval and plotting them  is:
 
-```{r echo=TRUE}
+
+```r
 {
 new_stepsbyint<-tapply(step_rep$steps, step_rep$interval, mean)
   plot(unique(step_rep$interval), new_stepsbyint,type="l")
 }
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)\
 The daily pattern of steps looks much the same as before.
 
 The time interval with the most steps can be found by using this R code:
-```{r echo=TRUE}
+
+```r
 {
   maxsteps<-which(new_stepsbyint==max(new_stepsbyint))
   stepstable<-cbind(unique(step_rep$interval), as.vector(new_stepsbyint))
   stepstable[maxsteps,1]
   }
+```
+
+```
+## [1] 835
 ```
 The time interval with the most steps is 8:35 to 8:40 am, which is the same interval as before.
 
@@ -153,7 +201,8 @@ The time interval with the most steps is 8:35 to 8:40 am, which is the same inte
 
 To determine the differences in activity patterns between weekends and weekdays we can add a column of factors (weekday or weekend) to the data frame containing the imputed data, and then produce a dataset each for weekdays and weekends, combine the datasets into to one and plot the activity on weekdends and weekdays as follows:
 
-```{r echo=TRUE}
+
+```r
 {
   weekend_day<-ifelse(weekdays(as.Date(step_rep$date))!="Saturday"&(weekdays(as.Date(step_rep$date))!="Sunday"),"weekday","weekend")
 #Add to step_rep dataset as a weekend or #weekday column. 
@@ -167,7 +216,8 @@ To determine the differences in activity patterns between weekends and weekdays 
 
 We can now find plot the average number of steps for each time interval in the weekends and on weekdays separately as follows:
 
-```{r echo=TRUE}
+
+```r
 {
 # Find average number of steps by time interval # for weekends.
   weekend_stepsbyint<-tapply(weekend_steps$steps, weekend_steps$interval, mean)
@@ -193,5 +243,7 @@ We can now find plot the average number of steps for each time interval in the w
   print(p)
 }
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-15-1.png)\
 
 The plots show that during the weekend the number of steps the subject takes is more evenly distributed over the daytime than in the week where the subject usually takes a peak number of steps at around 8:35am to 8:40am.
